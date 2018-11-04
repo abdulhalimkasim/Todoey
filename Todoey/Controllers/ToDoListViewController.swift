@@ -73,6 +73,7 @@ class ToDoListViewController: UITableViewController {
         
 //        context.delete(itemArray[indexPath.row])
 //        itemArray.remove(at: indexPath.row)
+//          kalau pakai 2 line code kat atas ni agak drastik sikit. click je terus delete
         
         
         saveItems()
