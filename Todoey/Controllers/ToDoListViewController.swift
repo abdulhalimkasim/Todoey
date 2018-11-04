@@ -13,7 +13,6 @@ class ToDoListViewController: UITableViewController {
     
    var itemArray = [Item] ()
 
-   
     
    let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     
@@ -22,15 +21,14 @@ class ToDoListViewController: UITableViewController {
         
         print(FileManager.default.urls(for: .documentDirectory, in: .userDomainMask))
         
-        
-        
+       
 
         loadItems()
         
         
     }
     
-    //MARK - Tableview Datasource Methods
+    //MARK: - Tableview Datasource Methods
     
 
 
@@ -65,7 +63,7 @@ class ToDoListViewController: UITableViewController {
         return cell
     }
     
-    //Mark - Tableview Delegate Methods
+    //MARK:- Tableview Delegate Methods
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
        
@@ -82,7 +80,7 @@ class ToDoListViewController: UITableViewController {
         tableView.deselectRow(at: indexPath, animated: true)
     }
     
-    //MARK - Add New Item
+    //MARK: - Add New Item
     
     
     @IBAction func addButtonPressed(_ sender: UIBarButtonItem) {
@@ -118,7 +116,7 @@ class ToDoListViewController: UITableViewController {
         present(alert, animated: true, completion: nil)
     }
     
-    //MARK - Model Manipulation Methods
+    //MARK: - Model Manipulation Methods
     
     func saveItems() {
         
@@ -133,13 +131,13 @@ class ToDoListViewController: UITableViewController {
         self.tableView.reloadData()
     }
     
-    func loadItems() {
+    func loadItems(with request: NSFetchRequest<Item> = Item.fetchRequest()) {
 
-        let request : NSFetchRequest<Item> = Item.fetchRequest()
+
         do {
             itemArray = try context.fetch(request)
         } catch {
-            print("Error fetching data \(error)")
+            print("Error fetching data from context \(error)")
         }
         
 
@@ -148,5 +146,20 @@ class ToDoListViewController: UITableViewController {
     
     
 }
+//MARK: Searchbar methods
 
+extension ToDoListViewController: UISearchBarDelegate {
+    
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        let request : NSFetchRequest<Item> = Item.fetchRequest()
+        
+        request.predicate = NSPredicate(format: "title CONTAINS[cd] %@", searchBar.text! )
+        
+        request.sortDescriptors = [NSSortDescriptor(key: "title", ascending: true)]
+        
+        loadItems(with: request)
+      
+        
 
+    }
+}
